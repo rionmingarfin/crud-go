@@ -46,6 +46,14 @@ type Products struct {
 	Category_id string `form:"category_id" json:"category_id"`
 }
 
+// table joins
+type Productss struct {
+	gorm.Model
+	Item        string `form:"item" json:"item"`
+	Category_id string `form:"category_id" json:"category_id"`
+	Name        string `form:"name" json:"name"`
+}
+
 // handler mrupakan kumpuan dari aktivitas siswa
 type Handler struct {
 	DB *SQLORM
@@ -63,8 +71,9 @@ func (h *Handler) ReadAll(w http.ResponseWriter, r *http.Request) {
 	w.Write(encodedResp)
 }
 func (h *Handler) GetProducts(w http.ResponseWriter, r *http.Request) {
-	SemuaProducts := []Products{}
-	h.DB.db.Find(&SemuaProducts)
+	SemuaProducts := []Productss{}
+	h.DB.db.Table("categories").Select("products.category_id,categories.name").Joins("INNER JOIN products ON products.category_id = categories.id").Find(&SemuaProducts)
+	// h.DB.db.Find(&SemuaProducts)
 	encodedResp, err := json.Marshal(SemuaProducts)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
