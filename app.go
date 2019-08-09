@@ -72,7 +72,7 @@ func (h *Handler) ReadAll(w http.ResponseWriter, r *http.Request) {
 }
 func (h *Handler) GetProducts(w http.ResponseWriter, r *http.Request) {
 	SemuaProducts := []Productss{}
-	h.DB.db.Table("categories").Select("products.category_id,categories.name").Joins("INNER JOIN products ON products.category_id = categories.id").Find(&SemuaProducts)
+	h.DB.db.Table("categories").Select("products.category_id,categories.name,products.item").Joins("INNER JOIN products ON products.category_id = categories.id").Where("item LIKE?", "%%").Find(&SemuaProducts)
 	// h.DB.db.Find(&SemuaProducts)
 	encodedResp, err := json.Marshal(SemuaProducts)
 	if err != nil {
